@@ -3,20 +3,24 @@
 #include "Database.h"
 #include "Composer.h"
 
+Database::~Database() {
+	for (int i = 0; i < next_slot_; i++) {
+		delete composers_[i];
+	}
+}
+
 Composer* Database::AddComposer(
-	std::string in_first_name,
-	std::string in_last_name,
+	std::string in_name,
 	std::string in_genre,
 	int in_yob,
 	std::string in_fact
 ) {
-	Composer* composer = new Composer();
-
-	composer->set_first_name(in_first_name);
-	composer->set_last_name(in_last_name);
-	composer->set_composer_yob(in_yob);
-	composer->set_composer_genre(in_genre);
-	composer->set_fact(in_fact);
+	Composer* composer = new Composer(
+		in_name,
+		in_yob,
+		in_genre,
+		in_fact
+	);
 
 	if (next_slot_ == kMaxComposers) {
 		std::cout << "Database is full!" << std::endl;
@@ -29,9 +33,9 @@ Composer* Database::AddComposer(
 	return composer;
 };
 
-Composer* Database::GetComposer(std::string in_last_name) {
+Composer* Database::GetComposer(std::string query) {
 	for (int i = 0; i < next_slot_; i++) {
-		if (composers_[i]->last_name() == in_last_name) {
+		if (composers_[i]->GetName().find(query) != std::string::npos) {
 			return composers_[i];
 		}
 	}
@@ -39,16 +43,42 @@ Composer* Database::GetComposer(std::string in_last_name) {
 	return nullptr;
 };
 
-void Database::DisplayAll() {
-	for (int i = 0; i < next_slot_; i++) {
-		composers_[i]->Display();
+Composer* Database::GetComposer(int index) {
+	if (index >= 0 && index <= next_slot_) {
+		return composers_[index - 1];
 	}
-};
 
-void Database::DisplayByRank() {
-	for (int i = 0; i < next_slot_; i++) {
-		if (composers_[i]->ranking() > 0) {
+	return nullptr;
+}
+
+void Database::DisplayAll() {
+	if (next_slot_ == 0) {
+		std::cout << "There is no composer. Please add one." << std::endl;
+	} else {
+		for (int i = 0; i < next_slot_; i++) {
+			std::cout << std::to_string(i + 1) + "." << std::endl;
 			composers_[i]->Display();
 		}
 	}
 };
+
+void Database::DisplayByIndex(int index) {
+	if (index >= 0 && index <= next_slot_) {
+		composers_[index - 1]->Display();
+	}
+ 
+	std::cout << "Composer by index: " << index << " not found" << std::endl; 
+}
+
+void Database::DisplayByRank() {
+	for (int i = 0; i < next_slot_; i++) {
+		if (composers_[i]->GetRanking() > 0) {
+			composers_[i]->Display();
+		}
+	}
+};
+
+void Database::ClearDB() {
+	Database::~Database();
+	next_slot_ = 0;
+}
