@@ -40,7 +40,7 @@ int main() {
   
         std::cout << "Name: ";
         std::getline(std::cin, name);
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+        std::cin.ignore(std::numeric_limits<int>::max(), '\n');
 
         std::cout << "Year of Birth: ";
         std::cin >> yob;
@@ -48,11 +48,9 @@ int main() {
 
         std::cout << "Genre: ";
         std::getline(std::cin, genre);
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         std::cout << "Fact: ";
         std::getline(std::cin, fact);
-        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
         myDB.AddComposer(
           name,

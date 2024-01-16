@@ -65,6 +65,7 @@ void Database::DisplayAll() {
 void Database::DisplayByIndex(int index) {
 	if (index >= 0 && index <= next_slot_) {
 		composers_[index - 1]->Display();
+		return;
 	}
  
 	std::cout << "Composer by index: " << index << " not found" << std::endl; 
